@@ -1,0 +1,8 @@
+node_modules/
+.env
+SCOPE.md
+DECISIONS.md
+import_report.txt
+AI_USAGE.md
+AI_CONTEXT.md
+*.ps1
