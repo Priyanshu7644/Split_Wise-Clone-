@@ -41,3 +41,10 @@ A modern, responsive web application designed to simplify shared expenses among 
 2. Install dependencies: `npm install`
 3. Start the Vite development server: `npm run dev`
 4. Visit `http://localhost:5173` in your browser.
+
+## AI Usage
+During the development of this project, AI (ChatGPT/Claude) was used as a learning assistant. Specifically, it was used to:
+- Generate the initial boilerplate for Vite and Express.
+- Understand how to structure MySQL foreign keys to cascade deletes properly.
+- Troubleshoot CSS Flexbox alignment issues on the dashboard.
+No core logic or balance calculations were generated blindly; all math and database schemas were hand-verified to ensure complete understanding.
