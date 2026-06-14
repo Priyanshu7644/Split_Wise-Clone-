@@ -1,0 +1,73 @@
+CREATE TABLE IF NOT EXISTS Users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    contact_number VARCHAR(20) UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS Groups_Table (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    created_by INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES Users(id)
+);
+
+CREATE TABLE IF NOT EXISTS Group_Members (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    group_id INT,
+    user_id INT,
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(group_id, user_id),
+    FOREIGN KEY (group_id) REFERENCES Groups_Table(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Expenses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    group_id INT NOT NULL,
+    paid_by INT NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    currency VARCHAR(10) DEFAULT 'INR',
+    description VARCHAR(255) NOT NULL,
+    notes TEXT,
+    split_type ENUM('EQUAL', 'PERCENTAGE', 'MANUAL') DEFAULT 'EQUAL',
+    expense_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (group_id) REFERENCES Groups_Table(id) ON DELETE CASCADE,
+    FOREIGN KEY (paid_by) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Expense_Shares (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    expense_id INT,
+    user_id INT,
+    amount_owed DECIMAL(12, 2) NOT NULL,
+    FOREIGN KEY (expense_id) REFERENCES Expenses(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Settlements (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    from_user INT NOT NULL,
+    to_user INT NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    group_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (from_user) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (to_user) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES Groups_Table(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Activity_Logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    group_id INT NOT NULL,
+    user_id INT NOT NULL,
+    action VARCHAR(50) NOT NULL,
+    details TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (group_id) REFERENCES Groups_Table(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
